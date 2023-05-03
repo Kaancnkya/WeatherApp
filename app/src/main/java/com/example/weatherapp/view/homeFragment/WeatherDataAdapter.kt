@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.weatherapp.model.data.WeatherResponse
 import com.example.weatherapp.R
-import com.example.weatherapp.constants.Consts
-import com.example.weatherapp.constants.addCelcius
-import com.example.weatherapp.constants.addSpeedText
+
 import com.example.weatherapp.databinding.CurrentlyItemBinding
 import com.example.weatherapp.databinding.NextDaysItemBinding
+import com.example.weatherapp.util.Consts
+import com.example.weatherapp.util.addCelcius
+import com.example.weatherapp.util.addSpeedText
 
 
 class WeatherDataAdapter(weatherResponse: WeatherResponse) :
@@ -19,7 +20,6 @@ class WeatherDataAdapter(weatherResponse: WeatherResponse) :
 
     private val currentWeather = weatherResponse.currentWeather
     private val times = weatherResponse.daily?.time
-    private val weatherCodes = weatherResponse.daily?.weathercode
     private val maxTemps = weatherResponse.daily?.apparentTemperatureMax
     private val minTemps = weatherResponse.daily?.apparentTemperatureMin
     private val icons = weatherResponse.icons
@@ -50,7 +50,6 @@ class WeatherDataAdapter(weatherResponse: WeatherResponse) :
     override fun onBindViewHolder(holder: WeatherDataAdapter.WeatherDataViewHolder, position: Int) {
         holder.bind(
             time = times?.get(position),
-            weatherCode = weatherCodes?.get(position),
             maxTemp = maxTemps?.get(position),
             minTemp = minTemps?.get(position),
             icon = icons[position]
@@ -72,7 +71,6 @@ class WeatherDataAdapter(weatherResponse: WeatherResponse) :
     inner class WeatherDataViewHolder(itemView: View) : ViewHolder(itemView) {
         fun bind(
             time: String?,
-            weatherCode: Int?,
             maxTemp: Double?,
             minTemp: Double?,
             icon: Int

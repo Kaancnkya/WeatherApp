@@ -1,4 +1,4 @@
-package com.example.weatherapp.constants
+package com.example.weatherapp.util
 
 import com.example.weatherapp.R
 

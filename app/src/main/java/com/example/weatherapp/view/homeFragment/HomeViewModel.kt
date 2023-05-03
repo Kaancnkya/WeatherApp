@@ -1,19 +1,26 @@
 package com.example.weatherapp.view.homeFragment
 
+import android.app.Application
+import android.os.Handler
+import android.os.Looper
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weatherapp.constants.Consts
+import com.example.weatherapp.db.WeatherPropertyDatabase
 import com.example.weatherapp.model.api.WeatherApiService
 import com.example.weatherapp.model.data.WeatherResponse
+import com.example.weatherapp.util.Consts
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(app : Application) : AndroidViewModel(app) {
 
-    private val weatherApiService = WeatherApiService.create()
+    private val weatherApiService = WeatherApiService.create(app.applicationContext)
+
+    private val weatherDb = WeatherPropertyDatabase.getInstance(app.applicationContext)
 
     private val _weatherData = MutableLiveData<WeatherResponse?>()
     val weatherData: LiveData<WeatherResponse?> = _weatherData
@@ -26,25 +33,37 @@ class HomeViewModel : ViewModel() {
                 call: Call<WeatherResponse>,
                 response: Response<WeatherResponse>
             ) {
-                if (response.isSuccessful) {
-                    val weatherResponse = response.body()
-                    setIcons(weatherResponse)
+                val weatherResponse = response.body()
 
-                    _weatherData.value = weatherResponse
-                }
+                // Iconlar hava durumuna göre dinamikleştirildi
+                setIcons(weatherResponse)
+
+
+                _weatherData.value = weatherResponse
+
+                Thread(Runnable {
+                    weatherDb.weatherPropertyDao().deleteAll()
+                    weatherResponse?.let { weatherResponse -> weatherDb.weatherPropertyDao().insertProperties(weatherResponse) }
+                }).start()
             }
 
             override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-
+                Thread(Runnable {
+                    val weatherResponse = weatherDb.weatherPropertyDao().getAllProperties()
+//                   _weatherData.postValue(weatherResponse)
+                    Handler(Looper.getMainLooper()).post(Runnable {
+                        _weatherData.value = weatherResponse
+                    })
+                }).start()
             }
+
         })
     }
 
-    private fun setIcons(weatherResponse: WeatherResponse?) {
 
+    fun setIcons(weatherResponse: WeatherResponse?) {
         val weatherCodes = weatherResponse?.daily?.weathercode
         val icons = ArrayList<Int>()
-
         weatherCodes?.forEach {
             when (it) {
                 0 -> icons.add(Consts.GUNES)
@@ -60,7 +79,7 @@ class HomeViewModel : ViewModel() {
             }
         }
         weatherResponse?.icons = icons
-
     }
-
 }
+
+

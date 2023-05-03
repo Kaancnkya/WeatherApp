@@ -1,31 +1,23 @@
 package com.example.weatherapp.model.data
 
 
-import com.example.weatherapp.model.data.CurrentWeather
-import com.example.weatherapp.model.data.Daily
-import com.example.weatherapp.model.data.DailyUnits
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "weather_property")
 data class WeatherResponse(
+    @PrimaryKey(autoGenerate = true)
+    val id : Int = 1,
+
     @SerializedName("current_weather")
+    @Embedded
     val currentWeather: CurrentWeather?,
+
     @SerializedName("daily")
+    @Embedded
     val daily: Daily?,
-    @SerializedName("daily_units")
-    val dailyUnits: DailyUnits?,
-    @SerializedName("elevation")
-    val elevation: Double?,
-    @SerializedName("generationtime_ms")
-    val generationtimeMs: Double?,
-    @SerializedName("latitude")
-    val latitude: Double?,
-    @SerializedName("longitude")
-    val longitude: Double?,
-    @SerializedName("timezone")
-    val timezone: String?,
-    @SerializedName("timezone_abbreviation")
-    val timezoneAbbreviation: String?,
-    @SerializedName("utc_offset_seconds")
-    val utcOffsetSeconds: Int?,
-    var icons: ArrayList<Int>,
+
+    var icons : List<Int>
 )
