@@ -15,7 +15,10 @@ import com.example.weatherapp.util.addCelcius
 import com.example.weatherapp.util.addSpeedText
 
 
-class WeatherDataAdapter(weatherResponse: WeatherResponse) :
+class WeatherDataAdapter(
+    private val weatherResponse: WeatherResponse,
+    private val weatherItemClickListener : (Int) -> Unit
+) :
     Adapter<WeatherDataAdapter.WeatherDataViewHolder>() {
 
     private val currentWeather = weatherResponse.currentWeather
@@ -90,6 +93,10 @@ class WeatherDataAdapter(weatherResponse: WeatherResponse) :
                     tvMinTemp.text = minTemp.toString().addCelcius()
                     tvMaxTemp.text = maxTemp.toString().addCelcius()
                     ivWeatherIcon.setImageResource(icon)
+
+                    cardViewCurrentDay.setOnClickListener {
+                        weatherItemClickListener(adapterPosition)
+                    }
                 }
             }
         }

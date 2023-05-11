@@ -9,5 +9,24 @@
         android:id="@+id/homeFragment"
         android:name="com.example.weatherapp.view.homeFragment.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.weatherapp.view.DetailFragment.DetailFragment"
+        android:label="DetailFragment" >
+        <argument
+            android:name="time"
+            app:argType="string" />
+        <argument
+            android:name="maxTemp"
+            app:argType="float" />
+        <argument
+            android:name="iconValue"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>

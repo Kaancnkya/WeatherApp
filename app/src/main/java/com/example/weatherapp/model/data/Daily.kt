@@ -1,11 +1,14 @@
 package com.example.weatherapp.model.data
 
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "daily_tablo")
+@Parcelize
 data class Daily(
     @PrimaryKey
     val id3 : Int = 1,
@@ -20,4 +23,4 @@ data class Daily(
     val time: List<String?>?,
 
     @SerializedName("weathercode")
-    val weathercode: List<Int?>?)
+    val weathercode: List<Int?>?) : Parcelable
