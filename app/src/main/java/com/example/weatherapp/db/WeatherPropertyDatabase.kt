@@ -19,28 +19,8 @@ import com.example.weatherapp.util.DataBaseConverter
     version = 1,
 )
 @TypeConverters(DataBaseConverter::class)
-abstract class WeatherPropertyDatabase : RoomDatabase(){
-    abstract fun weatherPropertyDao() : WeatherPropertyDao
+abstract class WeatherPropertyDatabase : RoomDatabase() {
+    abstract fun weatherPropertyDao(): WeatherPropertyDao
 
-    companion object {
-        @Volatile
-        private var instance: WeatherPropertyDatabase? = null
-
-        fun getInstance(context: Context): WeatherPropertyDatabase {
-            return instance ?: synchronized(this) {
-                val dataBase = Room.databaseBuilder(
-                    context.applicationContext,
-                    WeatherPropertyDatabase::class.java,
-                    "weather_response_database"
-                ).build()
-                instance = dataBase
-                dataBase
-            }
-
-
-        }
-
-
-    }
 
 }

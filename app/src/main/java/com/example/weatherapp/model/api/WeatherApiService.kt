@@ -16,7 +16,7 @@ import retrofit2.http.Query
 
 interface WeatherApiService {
     @GET("v1/forecast")
-    fun getWeatherResult(
+    suspend fun getWeatherResult(
         @Query("latitude") latitude: Double = 40.7750,
         @Query("longitude") longitude: Double = 29.9480,
         @Query("current_weather") current_weather: Boolean = true,
@@ -24,35 +24,6 @@ interface WeatherApiService {
         @Query("daily") daily: String = "weathercode,apparent_temperature_max,apparent_temperature_min",
         @Query("temperature_unit") temperatureUnit: String = "celsius",
         @Query("forecast_days") forecastDays: Int = 14
-    ): Call<WeatherResponse>
+    ): WeatherResponse
 
-    companion object{
-
-        fun create(context : Context) : WeatherApiService {
-
-            val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            val cacheSize = (5 * 1024 * 1024).toLong()
-            val myCache = Cache(context.cacheDir, cacheSize)
-
-            val okHttpClient = OkHttpClient.Builder()
-                .addNetworkInterceptor(httpLoggingInterceptor)
-                .cache(myCache)
-                .addInterceptor(Interceptor { chain ->
-                    val myRequest = chain.request()
-                    myRequest.newBuilder()
-                        .header("Cache-Control", "public, max-age=" + 90)
-                        .build()
-                    chain.proceed(myRequest)
-                })
-                .build()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl(Consts.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build()
-
-            return retrofit.create(WeatherApiService::class.java)
-        }
-    }
 }

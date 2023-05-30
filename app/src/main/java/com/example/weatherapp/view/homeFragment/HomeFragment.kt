@@ -4,48 +4,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.model.data.WeatherResponse
 import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.example.weatherapp.db.WeatherPropertyDatabase
 import com.example.weatherapp.model.api.WeatherApiService
 import com.example.weatherapp.repo.WeatherAppRepository
 import com.example.weatherapp.util.NetworkUtil
+import dagger.hilt.android.AndroidEntryPoint
 
-import java.text.DateFormat
-import java.util.Calendar
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var viewModel : HomeViewModel
+    private val viewModel : HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater,container,false)
 
-        val weatherApiService = WeatherApiService.create(requireContext())
-        val weatherDB = WeatherPropertyDatabase.getInstance(requireContext())
-        val hasInternet = NetworkUtil.isInternetAvailable(requireContext())
-        val weatherAppRepository = WeatherAppRepository(weatherApiService, weatherDB, hasInternet)
-
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            HomeViewModelFactory(weatherAppRepository),
-        )[HomeViewModel::class.java]
-
-        if (viewModel.weatherData.value == null) {
-            viewModel.fetchData()
-        }
 
         initObserve()
+
         return binding.root
     }
 
